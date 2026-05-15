@@ -1,108 +1,57 @@
-// function Button(props) {
-//   return <button>{props.text}</button>;
-// };
-
-// export default function App() {
-//   return (
-//     <>
-//       <Button text='Click' />
-//       <Button text='Send' />
-//       <Button text='Cancel' />
-//     </>
-//   );
-// };
-
-// import { useState } from 'react';
-
-// export default function App() {
-//   let counter = 0;
-
-//   const [copyCounter, setCopyCounter] = useState(counter);
-
-//   function count() {
-//     setCopyCounter(copyCounter + 1);
-//   };
-
-//   return (
-//     <>
-//       <span>{copyCounter}</span>
-//       <button onClick={count}>+1</button>
-//     </>
-//   );
-// };
-
-// export default function App() {
-//   const aluno = {
-//     id: 1,
-//     nome: 'Alex Bessa',
-//     curso: 'Desenvolvimento Web Full Stack',
-//     estado: ''
-//   };
-
-//   return (
-//     <>
-//       {aluno.estado && (
-//         `O aluno ${aluno.nome} está ${aluno.estado}.`
-//       )}
-//     </>
-//   );
-// };
-
-// export default function App() {
-//   const aluno = {
-//     id: 1,
-//     nome: 'Alex Bessa',
-//     curso: 'Desenvolvimento Web Full Stack',
-//     estado: false
-//   };
-
-//   return (
-//     <>
-//       {aluno.estado ? 'Aluno ativo.' : 'Aluno passivo.'}
-//     </>
-//   );
-// };
-
-function NewFact(props) {
-  return (
-    <>
-      <p>{props.text}</p>
-      <a href={props.source}>Fonte</a>
-    </>
-  );
-};
-
+import Header from "./components/Header";
+import FactList from "./components/FactList";
 import type { Fact } from "./types";
+import { useState } from "react";
+
+const INITIAL_FACTS: Fact[] = [{
+  id: 1,
+  text: 'React foi criado pelo Facebook e lançado em maio de 2013.',
+  source: 'https://react.dev',
+  category: 'technology',
+  votes_interesting: 22,
+  votes_mindblowing: 9,
+  votes_false: 1,
+  created_at: '2026-05-14T20:52:52Z'
+}, {
+  id: 2,
+  text: 'O cérebro humano tem cerca de 86 bilhões de neurônios.',
+  source: 'https://www.ncbi.nlm.nih.gov',
+  category: 'science',
+  votes_interesting: 41,
+  votes_mindblowing: 20,
+  votes_false: 0,
+  created_at: '2026-05-14T20:55:16Z'
+}, {
+  id: 3,
+  text: 'O Brasil é o maior produtor de café do mundo.',
+  source: 'https://www.embrapa.br',
+  category: 'history',
+  votes_interesting: 18,
+  votes_mindblowing: 5,
+  votes_false: 2,
+  created_at: '2026-05-14T20:57:21Z'
+}];
 
 export default function App() {
-  const facts: Fact[] = [
-    {
-      id: 1,
-      text: 'Digital College é nomeada a melhor escola de tecnologia de Fortaleza.',
-      source: 'https://opovo.com',
-      category: 'Tecnologia',
-      votes_interesting: 2,
-      votes_mindblowing: 0,
-      votes_false: 5,
-      created_at: '2026-05-07 19:35:03 GMT-3'
-    },
-    {
-      id: 2,
-      text: 'Neymar agride criança negra e pobre de comunidade filho de detento mundialmente conhecido.',
-      source: 'https://g1.com',
-      category: 'Esportes',
-      votes_interesting: 5,
-      votes_mindblowing: 13,
-      votes_false: 2,
-      created_at: '2026-05-05 13:45:07 GMT-3'
-    }
-  ];
+  const [facts, setFacts] = useState<Fact[]>(INITIAL_FACTS);
+  const [currentCategory, setCurrentCategory] = useState<string>('all');
+  const [showForm, setShowForm] = useState<boolean>(false);
+
+  const displayedFacts = currentCategory === 'all'
+    ? facts
+    : facts.filter(fact => fact.category === currentCategory);
+
+  function handleToggleForm() {
+    setShowForm(showForm => !showForm);
+  };
 
   return (
     <>
-      {facts.map((fact) => {
-        return <NewFact key={fact.id} text={fact.text} source={fact.source}/>
-      })}
+      <Header showForm={showForm} onToggleForm={handleToggleForm} />
+      { showForm && <p>Aqui conterá um formulário.</p> }
+      <main>
+        <FactList facts={displayedFacts} />
+      </main>
     </>
   );
 };
