@@ -1,8 +1,9 @@
 import Header from "./components/Header";
 import FactList from "./components/FactList";
 import type { Fact } from "./types";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CategoryFilter from "./components/CategoryFilter";
+import NewFactForm from "./components/NewFactForm";
 
 const INITIAL_FACTS: Fact[] = [{
   id: 1,
@@ -50,13 +51,19 @@ export default function App() {
     setCurrentCategory(category);
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (showForm) inputRef.current?.focus();
+  }, [showForm]);
+
   return (
     <>
       <Header
         showForm={showForm}
         onToggleForm={handleToggleForm}
       />
-      { showForm && <p>Aqui conterá um formulário.</p> }
+      {showForm && <NewFactForm inputRef={inputRef} />}
       <main>
         <CategoryFilter
           currentCategory={currentCategory}
